@@ -63,7 +63,7 @@ async def send_mail(sender, client, message):
         )
         return
     userid = message.chat.id
-    to = await client.ask(userid, '**Send me recipient mail**')
+    to = await message.chat.ask('**Send me recipient mail**')
 
     mail = []
     for entity in to.text.entities:
@@ -86,8 +86,8 @@ async def send_mail(sender, client, message):
         )
         return
 
-    subject = await client.ask(userid, "Provide mail subject")
-    body = await client.ask(userid, "Send any text to send.")
+    subject = await message.chat.ask( "Provide mail subject")
+    body = await message.chat.ask( "Send any text to send.")
     print(body.text)
 
     api = f"https://api.mailgun.net/v3/{domain}/messages"
@@ -693,8 +693,7 @@ Owner : {query.message.reply_to_message.from_user.mention()}
 
 
 async def transfer_mail(client, message, mail):
-    recipient = await client.ask(message.chat.id,
-                                 "**Please enter new owners username**")
+    recipient = await message.chat.ask("**Please enter new owners username**")
     args = recipient.text.split(" ")
     if not args[0].startswith("@"):
         await client.send_message(
@@ -742,8 +741,7 @@ async def block(client, message, option):
 
     trigger = []
     if option == "mails":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a mail to block:\nEx:** ```ostrich@spammer.com```")
         for entity in value.text.entities:
             if entity.type == MessageEntityType.EMAIL:
@@ -754,8 +752,7 @@ async def block(client, message, option):
         text = f"**Blocked successfully.\nNow you won't receive mails from {trigger}**"
 
     if option == "domains":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a domain to block:\nEx:** ```spammer.com```")
         for entity in value.text.entities:
             if entity.type == MessageEntityType.URL:
@@ -770,8 +767,7 @@ async def block(client, message, option):
         text = f"**Blocked successfully.\nNow you won't receive mails from {trigger}**"
 
     if option == "regex":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a regex to block its matches:\nEx:** ```(.*)@spammer.com```"
         )
         pattern = value.text
@@ -804,8 +800,7 @@ async def unblock(client, message, option):
 
     trigger = []
     if option == "mails":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a mail to unblock:\nEx:** ```ostrich@notaspammer.com```"
         )
         for entity in value.text.entities:
@@ -814,8 +809,7 @@ async def unblock(client, message, option):
                 l = entity.length
                 trigger.append(value.text[o:o + l])
     if option == "domains":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a domain to unblock:\nEx:** ```notaspammer.com```")
         for entity in value.text.entities:
             if entity.type == MessageEntityType.URL:
@@ -828,8 +822,7 @@ async def unblock(client, message, option):
                     domain = tsd + '.' + td + '.' + tsu
                 trigger.append(domain)
     if option == "regex":
-        value = await client.ask(
-            message.chat.id,
+        value = await message.chat.ask(
             "**Provide a regex to unblock its matches:\nEx:** ```(.*)@notaspammer.com```"
         )
         pattern = value.text
